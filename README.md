@@ -28,6 +28,8 @@ That string is the P (padding) in CSSP, because you would need to add this "sign
 		}
 	);
 
+*Note*: it is not necessary that there actually be any element on the page with given signal ID. The plugin will automatically create one, watch it, and then remove it when the dependency is eventually fulfilled.
+
 ## Todo
 
 - Allow for more flexibility in the name and value of the signal CSS rule.
