@@ -12,19 +12,30 @@ The technique of polling for a known style rule to become applied, as a way of d
 
 In the initial release, our implementation assumes that the CSS rule to watch for will be like this:
 
-	#someID { z-index: 12345; }
+	#someID { position:relative; z-index:12345; }
 
-That string is the P (padding) in CSSP, because you would need to add this "signal" to the end of your external CSS file in order for the CSSP plugin to detect that the stylesheet was in effect. Having that, and the CSSP plugin, would allow you to write a RequireJS dependency like so:
+That rule is the P (padding) in CSSP, because you would need to add this "signal" to the end of your CSS file in order for the CSSP plugin to detect that the stylesheet was in effect. Having that, and the CSSP plugin, would allow you to write a RequireJS dependency like so:
 
-	require.def(
+	define(
 		'someModule',
-		['someOtherModule', 'cssp!someStyles.css#someID'],
+		['someOtherModule', 'cssp!someStyles.css?someID'],
 		
 		function(someOtherModule) {
 			// we can be certain the someStyles.css
 			// CSS rules are now in effect
 			
-			// module code
+			// module code goes here
+		}
+	);
+
+Or simply...
+
+	require({
+		['cssp!someStyles.css?someID'],
+		function() {
+			// someStyles are in effect now
+			
+			// module code goes here
 		}
 	);
 
