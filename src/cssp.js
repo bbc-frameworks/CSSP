@@ -122,10 +122,10 @@
 
 		/**
 		 * Called when a dependency needs to be loaded.
-		 * @param {string} name Like some/url#elementId
+		 * @param {string} name Like some/url/foo.css?elementId
 		 */
 		load: function (name, contextName) {
-			var splitAt = name.lastIndexOf('#'),
+			var splitAt = name.lastIndexOf('?'),
 				url = name.substring(0, splitAt),
 				id = name.substring(splitAt + 1, name.length),
 				context = require.s.contexts[contextName],
@@ -137,14 +137,14 @@
 
 			// add this item to the queue
 			csspQueue.push([id, function() { // create callback function
-				context.loaded[name] = true;
-				require.checkLoaded(contextName);
-				
-				// remove element if it is one we added
+				// remove test element if it is one we added
 				var elem = document.getElementById(id);
 				if (elem.className === 'addedByCssp') {
 					document.body.removeChild(elem);
 				}
+				
+				context.loaded[name] = true;
+				require.checkLoaded(contextName);
 			}]);
 			
 			if (csspQueue.length === 1) {

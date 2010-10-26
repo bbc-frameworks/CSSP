@@ -1,0 +1,8 @@
+#test-element {
+	color: white;
+}
+
+#unicorns {
+	position: absolute;
+	z-index: 12345;
+}
