@@ -1,7 +1,8 @@
 (function () {
 	var magicNumber = 12345, // a zindex must be set to this to signal CSS has been applied
 		csspQueue = [], // waiting for these: like [ [elemId, callback], [elemId, callback], ... ]
-		intervalId;
+		intervalId,
+		cacheTrack = {}; // what css files have already been added to the page?
 	/*
 	 * Fix bugginess in IE that can cause the wrong element to be returned when
 	 * a DOM node has the same `name` as another DOM node's `id`.
@@ -59,7 +60,8 @@
 	 * @private
 	 */
 	function look() {
-		var cssp;
+		var cssp,
+		    elem;
 		
 		if (!document.body) {
 			return;
@@ -156,7 +158,14 @@
 			context.loaded[name] = false;
 			node.type = 'text/css';
 			node.rel  = 'stylesheet';
-			node.href = (context.config.baseUrl || '') + url;
+			
+			// is there a path defined for this css?
+			var path = context.config.paths['cssp!'+url];
+			if (path && ! /^(\/|^https?:)/i.test(path)) { // not an absolute path or URL
+			    path = (context.config.baseUrl || '') + path;
+			}
+        
+			node.href = path? path : (context.config.baseUrl || '') + url;
 			head.appendChild(node);
 		},
 

@@ -6,7 +6,7 @@ test('CSSP can be used when no test element exists on the page.', function() {
 	
 	stop(5000);
 	require({
-			baseUrl: 'mock',
+			baseUrl: 'mock'
 		},
 		['cssp!test1.css?test1'],
 		function() {
@@ -28,7 +28,7 @@ test('CSSP can be used when a test element already exists on the page.', functio
 	
 	stop(5000);
 	require({
-			baseUrl: 'mock',
+			baseUrl: 'mock'
 		},
 		['cssp!test2.css?unicorns'],
 		function() {
