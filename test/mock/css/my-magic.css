@@ -1,0 +1,8 @@
+#test-element {
+	color: gold;
+}
+
+#abracadabra {
+	position: absolute;
+	z-index: 12345;
+}
