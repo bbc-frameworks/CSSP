@@ -136,7 +136,21 @@
 				},
 				head = require.s.head,
 				node = head.ownerDocument.createElement('link');
+            
+            // is there a path defined for this css?
+			var cssUrl = context.config.paths['cssp!'+url];
+			if (cssUrl && ! /^(\/|^https?:)/i.test(cssUrl)) { // not an absolute path or URL
+			    cssUrl = (context.config.baseUrl || '') + cssUrl;
+			}
+			else {
+			    cssUrl = (context.config.baseUrl || '') + url;
+			}
 
+			if (cacheTrack[cssUrl]) { // already included a link to this page
+			    return true;
+			}
+            cacheTrack[cssUrl] = url;
+            
 			// add this item to the queue
 			csspQueue.push([id, function() { // create callback function
 				// remove test element if it is one we added
@@ -159,13 +173,7 @@
 			node.type = 'text/css';
 			node.rel  = 'stylesheet';
 			
-			// is there a path defined for this css?
-			var path = context.config.paths['cssp!'+url];
-			if (path && ! /^(\/|^https?:)/i.test(path)) { // not an absolute path or URL
-			    path = (context.config.baseUrl || '') + path;
-			}
-        
-			node.href = path? path : (context.config.baseUrl || '') + url;
+			node.href = cssUrl;
 			head.appendChild(node);
 		},
 
