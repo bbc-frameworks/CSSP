@@ -39,7 +39,7 @@ Or simply...
 		}
 	);
 
-*Note*: it is not necessary that there actually be any element on the page with given signal ID. The plugin will automatically create one, watch it, and then remove it when the dependency is eventually fulfilled.
+Notice it is not necessary that there actually be any element on the page with given signal ID. The plugin will automatically create one, watch it, and then remove it when the dependency is eventually fulfilled.
 
 ## Configuring Paths for cssp! IDs
 
@@ -65,6 +65,22 @@ The RequireJS `require()` method allows you to configure paths for you JavaScrip
 	);
 
 Notice that by using this technique you can associate multiple cssp! moduleIDs with a single `.css` file. Also, as an efficiency, the CSS file inclusion will only ever happen once per filepath, regardless of how many different moduleIDs are associated with that filepath.
+
+### Using the Default Signal ID
+
+In the above examples the user provided a signal ID to the the CSSP plugin by appending it after a `?` character. It is possible to allow the CSSP plugin to use a default signal ID however. The ID will be calculated by taking the given css ID and replacing all non-alphanumeric characters with a dash. So, for example, the following cssp requires are identical:
+
+    // an explicit signal ID
+    require({
+		['cssp!sparkle/elves?cssp-sparkle-elves'],
+		function() { }
+	);
+	
+	// use the default signal ID (cssp-sparkle-elves)
+	require({
+		['cssp!sparkle/elves'],
+		function() { }
+	);
 
 ## Todo
 
