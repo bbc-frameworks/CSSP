@@ -33,13 +33,38 @@ Or simply...
 	require({
 		['cssp!someStyles.css?someID'],
 		function() {
-			// someStyles are in effect now
+			// someStyles.css rules are in effect now
 			
 			// module code goes here
 		}
 	);
 
 *Note*: it is not necessary that there actually be any element on the page with given signal ID. The plugin will automatically create one, watch it, and then remove it when the dependency is eventually fulfilled.
+
+## Configuring Paths for cssp! IDs
+
+The RequireJS `require()` method allows you to configure paths for you JavaScript modules by associating a moduleID with a specific file path. If you use a moduleID that starts with "cssp!" the associated path will be used to include the `.css` file. For example:
+
+    require({
+        baseUrl: 'base/dir/',
+	    paths: {
+            'cssp!sparkle/unicorns': 'css/my-magic.css',
+            'cssp!sparkle/elves':    'css/my-magic.css'
+        }
+    });
+    
+    // later...
+    
+    require({
+		['cssp!sparkle/elves?someID'],
+		function() {
+			// base/dir/css/my-magic.css rules are in effect now
+			
+			// module code goes here
+		}
+	);
+
+Notice that by using this technique you can associate multiple cssp! moduleIDs with a single `.css` file. Also, as an efficiency, the CSS file inclusion will only ever happen once per filepath, regardless of how many different moduleIDs are associated with that filepath.
 
 ## Todo
 
