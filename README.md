@@ -68,21 +68,18 @@ Notice that by using this technique you can associate multiple cssp! moduleIDs w
 
 ### Using the Default Signal ID
 
-In the above examples the user provided a signal ID to the the CSSP plugin by appending it after a `?` character. It is possible to allow the CSSP plugin to use a default signal ID however. The ID will be calculated by taking the given css ID and replacing all non-alphanumeric characters with a dash. So, for example, the following cssp requires are identical:
+In the above examples the user provided a signal ID to the the CSSP plugin by appending it after a `?` character. It is possible to allow the CSSP plugin to derive and use a default signal ID however. The ID will be calculated by taking the given css ID and replacing all non-alphanumeric characters with a dash. So, for example, the following cssp requires are identical:
 
-    // an explicit signal ID
     require({
 		['cssp!sparkle/elves?cssp-sparkle-elves'],
-		function() { }
+		function() {
+		}
 	);
 	
-	// use the default signal ID (cssp-sparkle-elves)
+	// is the same as...
+	
 	require({
 		['cssp!sparkle/elves'],
-		function() { }
+		function() {
+		}
 	);
-
-## Todo
-
-- Allow for more flexibility in the name and value of the signal CSS rule.
-- Consider possibly of automatically deriving signal ID from the URL?

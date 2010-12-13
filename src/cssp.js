@@ -1,8 +1,15 @@
+/**
+ * @fileoverview Add the ability to depend on CSS files to RequireJS.
+ * @copyright 2010 British Broadcasting Corporation
+ * @author Michael Mathews <michael.mathews@bbc.co.uk>
+ * @see http://otaqui.com/blog/890/cssp-loading-css-with-javascript-and-getting-an-onload-callback/
+ */
+
 (function () {
 	var magicNumber = 12345, // a zindex must be set to this to signal CSS has been applied
 		csspQueue = [], // waiting for these: like [ [elemId, callback], [elemId, callback], ... ]
 		intervalId,
-		cacheTrack = {}; // what css files have already been added to the page?
+		cacheTrack = {}; // what css files have already been added to this page?
 	/*
 	 * Fix bugginess in IE that can cause the wrong element to be returned when
 	 * a DOM node has the same `name` as another DOM node's `id`.
