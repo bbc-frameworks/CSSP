@@ -128,19 +128,22 @@
 		 */
 		load: function (name, contextName) {
 			var splitAt = name.lastIndexOf('?'),
-				url = name.substring(0, splitAt),
-				id = name.substring(splitAt + 1, name.length),
+				url = (splitAt > 0? name.substring(0, splitAt) : name),
+				id = (splitAt > 0? name.substring(splitAt + 1, name.length) : 'cssp-' + name.replace(/[^a-z0-9_]/gi, '-') ),
 				context = require.s.contexts[contextName],
 				data = {
 					name: name
 				},
 				head = require.s.head,
-				node = head.ownerDocument.createElement('link');
+				node = head.ownerDocument.createElement('link'),
+				cssUrl;
             
             // is there a path defined for this css?
 			var cssUrl = context.config.paths['cssp!'+url];
+			
 			if (cssUrl && ! /^(\/|^https?:)/i.test(cssUrl)) { // not an absolute path or URL
 			    cssUrl = (context.config.baseUrl || '') + cssUrl;
+			    
 			}
 			else {
 			    cssUrl = (context.config.baseUrl || '') + url;

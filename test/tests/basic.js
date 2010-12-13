@@ -1,10 +1,11 @@
 test('CSSP can be used when no test element exists on the page.', function() {
 	expect(3);
+	stop(3000);
 	
 	var csspTestEl = document.getElementById('addedByCssp');
 	equals(csspTestEl, null, 'There should be no test element on the page initially.');
 	
-	stop(5000);
+	
 	require({
 			baseUrl: 'mock'
 		},
@@ -14,19 +15,21 @@ test('CSSP can be used when no test element exists on the page.', function() {
 			
 			csspTestEl = document.getElementById('addedByCssp');
 			equals(csspTestEl, null, 'There should still be no test element on the page after the css is detected.');
-
-			start();
 		}
 	);
+	
+	setTimeout(function() {  
+        start();  
+    }, 2000);
 });
 
 test('CSSP can be used when a test element already exists on the page.', function() {
 	expect(3);
+	stop(3000);
 	
 	var csspTestEl = document.getElementById('unicorns');
 	ok(csspTestEl !== null, 'There should be a test element on the page initially.');
 	
-	stop(5000);
 	require({
 			baseUrl: 'mock'
 		},
@@ -36,8 +39,10 @@ test('CSSP can be used when a test element already exists on the page.', functio
 			
 			csspTestEl = document.getElementById('unicorns');
 			ok(csspTestEl !== null, 'There should still be a test element on the page after the css is detected.');
-
-			start();
 		}
 	);
+	
+	setTimeout(function() {  
+        start();  
+    }, 2000);
 });
