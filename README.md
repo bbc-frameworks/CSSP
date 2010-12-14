@@ -20,9 +20,12 @@ That rule is the P (padding) in CSSP, because you would need to add this "signal
 		'someModule',
 		['someOtherModule', 'cssp!someStyles.css?someID'],
 		
-		function(someOtherModule) {
+		function(someOtherModule, linkNode) {
 			// we can be certain the someStyles.css
 			// CSS rules are now in effect
+			
+			// the linkNode argument contains a reference to the DOM Node
+			// associated with the injected LINK element for the stylesheet
 			
 			// module code goes here
 		}

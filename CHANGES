@@ -4,6 +4,8 @@
 
 0.2.0
 - Added support for cssp! module ID's in the requireJS paths configuration.
+- Added support for tracking css file injections, so same stylesheet is only
+  ever loaded once.
 
 0.0.1
 - Initial release: Support dependency on CSS files in RequireJS.

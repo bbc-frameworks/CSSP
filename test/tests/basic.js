@@ -46,3 +46,25 @@ test('CSSP can be used when a test element already exists on the page.', functio
         start();  
     }, 2000);
 });
+
+test('CSSP callback receives a ref to the injected link DOM node.', function() {
+	expect(3);
+	stop(3000);
+
+	require({
+        baseUrl: 'mock'
+    });
+    
+	require(
+		['cssp!test1.css?test1'],
+		function(linkNode) {
+			equals(typeof linkNode, 'object', 'The given linkNode is defined.');
+			equals(linkNode.nodeName.toUpperCase(), 'LINK', 'The given node object has a name of LINK.');
+			ok(~ linkNode.href.indexOf('test1.css'), 'The given linkNode has the correct href property.');
+		}
+	);
+	
+	setTimeout(function() {  
+        start();  
+    }, 2000);
+});
