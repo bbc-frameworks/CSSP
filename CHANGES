@@ -1,0 +1,9 @@
+0.3.0
+- Callback for a cssp dependency now receives a ref to the injected link DOM
+  node as its argument.
+
+0.2.0
+- Added support for cssp! module ID's in the requireJS paths configuration.
+
+0.0.1
+- Initial release: Support dependency on CSS files in RequireJS.
