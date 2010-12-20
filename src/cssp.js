@@ -139,8 +139,9 @@
                 url = (splitAt > 0? name.substring(0, splitAt) : name),
                 id = (splitAt > 0? name.substring(splitAt + 1, name.length) : 'cssp-' + name.replace(/[^a-z0-9_]/gi, '-') ),
                 context = require.s.contexts[contextName],
+                moduleId = 'cssp!' + name,
                 data = {
-                    name: name
+                    moduleId: moduleId
                 },
                 head = require.s.head,
                 node = head.ownerDocument.createElement('link'),
@@ -149,11 +150,13 @@
             // is there a path defined for this css?
             var cssUrl = context.config.paths['cssp!'+url];
             
-            if (cssUrl && ! /^(\/|^https?:)/i.test(cssUrl)) { // not an absolute path or URL
+            if (cssUrl && ! /^(\/|^https?:)/i.test(cssUrl)) {
+                // not an absolute path or URL
                 cssUrl = (context.config.baseUrl || '') + cssUrl;
                 
             }
-            else {
+            else if (cssUrl.charAt(0) == '/') {
+                // absolute path, without protocol and host
                 cssUrl = (context.config.baseUrl || '') + url;
             }
 
@@ -170,7 +173,7 @@
                     document.body.removeChild(elem);
                 }
                 
-                context.loaded[name] = true;
+                context.loaded[moduleId] = true;
                 require.checkLoaded(contextName);
             }]);
             
@@ -180,7 +183,7 @@
 
             // hold on to the data for later dependency resolution in orderDeps
             context.csspWaiting.push(data);
-            context.loaded[name] = false;
+            context.loaded[moduleId] = false;
             node.type = 'text/css';
             node.rel  = 'stylesheet';
             
@@ -217,7 +220,7 @@
             
             context.csspWaiting = [];
             for (i = 0; (dep = waitAry[i]); i++) {
-                context.defined[dep.name] = ret;
+                context.defined[dep.moduleId] = ret;
             }
         }
     });
