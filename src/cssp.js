@@ -1,6 +1,7 @@
 /**
  * @fileoverview Add the ability to depend on CSS files to RequireJS.
  * @copyright 2010 British Broadcasting Corporation
+ * @author Richard Hodgson <richard.hodgson@bbc.co.uk>
  * @author Michael Mathews <michael.mathews@bbc.co.uk>
  * @see http://otaqui.com/blog/890/cssp-loading-css-with-javascript-and-getting-an-onload-callback/
  */
