@@ -17,6 +17,15 @@
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
 	
-	<div id="test-element">Hello World.<div id="unicorns"></div></div>
+	<div id="test-element"><span id="first">Hello</span> <span id="last">World</span>.<div id="test2"></div></div>
+	<script type="text/javascript">
+        function saveTestElement() {
+            restoreTestElement.html = document.getElementById('test-element').innerHTML;
+        }
+        
+        function restoreTestElement() {
+            document.getElementById('test-element').innerHTML = restoreTestElement.html;
+        }
+    </script>
 </body>
 </html>

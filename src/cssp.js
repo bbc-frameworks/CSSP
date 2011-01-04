@@ -136,30 +136,34 @@
          * @param {string} name Like some/url/foo.css?elementId
          */
         load: function (name, contextName) {
+//console.log('>>> name is '+name+', contextName is '+contextName);
             var splitAt = name.lastIndexOf('?'),
                 url = (splitAt > 0? name.substring(0, splitAt) : name),
-                id = (splitAt > 0? name.substring(splitAt + 1, name.length) : 'cssp-' + name.replace(/[^a-z0-9_]/gi, '-') ),
+                cssElmId = (splitAt > 0? name.substring(splitAt + 1, name.length) : 'cssp-' + name.replace(/[^a-z0-9_]/gi, '-') ),
                 context = require.s.contexts[contextName],
-                moduleId = 'cssp!' + name,
+                moduleId = 'cssp!' + url,
                 data = {
-                    moduleId: moduleId
+                    name: name
                 },
                 head = require.s.head,
                 node = head.ownerDocument.createElement('link'),
                 cssUrl;
-            
+//console.log('moduleId is '+moduleId);
+
             // is there a path defined for this css?
             var cssUrl = context.config.paths['cssp!'+url];
-            
+//console.log('cssUrl is '+cssUrl);
+
             if (cssUrl && ! /^(\/|^https?:)/i.test(cssUrl)) {
                 // not an absolute path or URL
                 cssUrl = (context.config.baseUrl || '') + cssUrl;
                 
             }
-            else if (cssUrl.charAt(0) == '/') {
+            else if (!cssUrl || cssUrl.charAt(0) === '/') {
                 // absolute path, without protocol and host
                 cssUrl = (context.config.baseUrl || '') + url;
             }
+//console.log('resolved cssUrl is '+cssUrl);
 
             if (cacheTrack[cssUrl]) { // already included a link to this page
                 return true;
@@ -167,14 +171,14 @@
             cacheTrack[cssUrl] = url;
             
             // add this item to the queue
-            csspQueue.push([id, function() { // create callback function
+            csspQueue.push([cssElmId, function() { // create callback function
                 // remove test element if it is one we added
-                var elem = document.getElementById(id);
+                var elem = document.getElementById(cssElmId);
                 if (elem.className === 'addedByCssp') {
                     document.body.removeChild(elem);
                 }
                 
-                context.loaded[moduleId] = true;
+                context.loaded[name] = true;
                 require.checkLoaded(contextName);
             }]);
             
@@ -184,7 +188,7 @@
 
             // hold on to the data for later dependency resolution in orderDeps
             context.csspWaiting.push(data);
-            context.loaded[moduleId] = false;
+            context.loaded[name] = false;
             node.type = 'text/css';
             node.rel  = 'stylesheet';
             
@@ -217,11 +221,11 @@
             var i,
                 dep,
                 waitAry = context.csspWaiting,
-                ret = context.linkNode; // <- the thing passed into the requirejs callback
+                returnValue = context.linkNode; // <- the thing passed into the requirejs callback
             
             context.csspWaiting = [];
             for (i = 0; (dep = waitAry[i]); i++) {
-                context.defined[dep.moduleId] = ret;
+                context.defined[dep.name] = returnValue;
             }
         }
     });

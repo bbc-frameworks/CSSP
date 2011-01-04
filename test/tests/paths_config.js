@@ -1,6 +1,7 @@
-test('CSSP can refer to cssp! filepaths in the paths configuration for RequireJS.', function() {
-	expect(4);
+test('CSSP can refer to cssp! module ids in the "paths" configuration for RequireJS.', function() {
+	expect(3);
 	stop(3000);
+	saveTestElement();
 	
 	// assumes href strings will be unique in any link
 	function getLinksToHref(href) {
@@ -17,10 +18,7 @@ test('CSSP can refer to cssp! filepaths in the paths configuration for RequireJS
 	    return matchingLinks;
 	}
 	
-	var csspTestEl = document.getElementById('unicorns');
-	ok(csspTestEl !== null, 'There should be a test element on the page initially.');
- 	
- 	// configure
+	// configure
  	require({
         baseUrl: 'mock',
  	    paths: {
@@ -32,12 +30,12 @@ test('CSSP can refer to cssp! filepaths in the paths configuration for RequireJS
      });
      
     require(
-		['cssp!sparkle/unicorns?abracadabra', 'cssp!sparkle/elves?abracadabra'],
+		['cssp!sparkle/unicorns?unicorns', 'cssp!sparkle/elves?elves'],
 		
 		function() {
 		    var links = getLinksToHref('mock/css/my-magic.css');
-            ok( links.length, 'A new css link should have the path from the paths configuration.');
-		    equals( links.length, 1, 'A new css link should not be added when one already exists for the same resource.');
+            ok( links.length, 'A CSS Link Element should be added with the href from the paths configuration.');
+		    equals( links.length, 1, 'A new CSS Link Element should not be added when one already exists for the same url.');
 
 		}
 	);
@@ -51,6 +49,7 @@ test('CSSP can refer to cssp! filepaths in the paths configuration for RequireJS
 	);
 	
 	setTimeout(function() {
+	    restoreTestElement();
 	    start();  
     }, 2000);
 });

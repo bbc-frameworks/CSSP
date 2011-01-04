@@ -1,8 +1,26 @@
-#test-element {
+/*
+    This file represents a use case where multiple css modules have been
+    concatenated into a single download.
+ */
+
+
+/**** css for elves ************/
+#test-element #first {
+	color: turquoise;
+}
+
+#elves {
+	position: absolute;
+	z-index: 12345;
+}
+
+/**** css for unicorns *********/
+
+#test-element #last {
 	color: gold;
 }
 
-#abracadabra {
+#unicorns {
 	position: absolute;
 	z-index: 12345;
 }

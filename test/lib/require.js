@@ -4,11 +4,11 @@
  * see: http://github.com/jrburke/requirejs for details
  */
 //laxbreak is true to allow build pragmas to change some statements.
-/*jslint white: false, plusplus: false, nomen: false, laxbreak: true, regexp: false */
+/*jslint plusplus: false, nomen: false, laxbreak: true, regexp: false */
 /*global window: false, document: false, navigator: false,
 setTimeout: false, traceDeps: true, clearInterval: false, self: false,
 setInterval: false, importScripts: false, jQuery: false */
-
+"use strict";
 
 var require, define;
 (function () {
@@ -48,7 +48,8 @@ var require, define;
         }
     }
     
-        /**
+    //>>excludeStart("requireExcludePlugin", pragmas.requireExcludePlugin);
+    /**
      * Calls a method on a plugin. The obj object should have two property,
      * name: the name of the method to call on the plugin
      * args: the arguments to pass to the plugin method.
@@ -69,7 +70,8 @@ var require, define;
             req(["require/" + prefix], context.contextName);
         }
     }
-    
+    //>>excludeEnd("requireExcludePlugin");
+
     /**
      * Convenience method to call main for a require.def call that was put on
      * hold in the defQueue.
@@ -334,7 +336,8 @@ var require, define;
         context = s.contexts[contextName];
 
         if (name) {
-                        // Pull off any plugin prefix.
+            //>>excludeStart("requireExcludePlugin", pragmas.requireExcludePlugin);
+            // Pull off any plugin prefix.
             index = name.indexOf("!");
             if (index !== -1) {
                 pluginPrefix = name.substring(0, index);
@@ -346,7 +349,8 @@ var require, define;
                 pluginPrefix = context.defPlugin[name];
             }
 
-            
+            //>>excludeEnd("requireExcludePlugin");
+
             //If module already defined for context, or already waiting to be
             //evaluated, leave.
             waitingName = context.waiting[name];
@@ -398,10 +402,12 @@ var require, define;
                 modifiers: {}
             };
 
-                        if (s.plugins.newContext) {
+            //>>excludeStart("requireExcludePlugin", pragmas.requireExcludePlugin);
+            if (s.plugins.newContext) {
                 s.plugins.newContext(newContext);
             }
-            
+            //>>excludeEnd("requireExcludePlugin");
+
             context = s.contexts[contextName] = newContext;
         }
 
@@ -471,12 +477,14 @@ var require, define;
                 req(config.deps || [], config.callback);
             }
 
-                        //Set up ready callback, if asked. Useful when require is defined as a
+            //>>excludeStart("requireExcludePageLoad", pragmas.requireExcludePageLoad);
+            //Set up ready callback, if asked. Useful when require is defined as a
             //config object before require.js is loaded.
             if (config.ready) {
                 req.ready(config.ready);
             }
-            
+            //>>excludeEnd("requireExcludePageLoad");
+
             //If it is just a config block, nothing else,
             //then return.
             if (!deps) {
@@ -511,7 +519,8 @@ var require, define;
             //pause/resume case where there are multiple modules in a file.
             context.specified[name] = true;
 
-                        //Load any modifiers for the module.
+            //>>excludeStart("requireExcludeModify", pragmas.requireExcludeModify);
+            //Load any modifiers for the module.
             mods = context.modifiers[name];
             if (mods) {
                 req(mods, contextName);
@@ -532,7 +541,8 @@ var require, define;
                     }
                 }
             }
-                    }
+            //>>excludeEnd("requireExcludeModify");
+        }
 
         //If the callback is not an actual function, it means it already
         //has the definition of the module as a literal value.
@@ -541,13 +551,15 @@ var require, define;
         }
 
         //If a pluginPrefix is available, call the plugin, or load it.
-                if (pluginPrefix) {
+        //>>excludeStart("requireExcludePlugin", pragmas.requireExcludePlugin);
+        if (pluginPrefix) {
             callPlugin(pluginPrefix, context, {
                 name: "require",
                 args: [name, deps, callback, context]
             });
         }
-        
+        //>>excludeEnd("requireExcludePlugin");
+
         //Hold on to the module until a script load or other adapter has finished
         //evaluating the whole file. This helps when a file has more than one
         //module in it -- dependencies are not traced and fetched until the whole
@@ -585,12 +597,14 @@ var require, define;
         ctxName: defContextName,
         contexts: {},
         paused: [],
-                plugins: {
+        //>>excludeStart("requireExcludePlugin", pragmas.requireExcludePlugin);
+        plugins: {
             defined: {},
             callbacks: {},
             waiting: {}
         },
-                //Stores a list of URLs that should not get async script tag treatment.
+        //>>excludeEnd("requireExcludePlugin");
+        //Stores a list of URLs that should not get async script tag treatment.
         skipAsync: {},
         isBrowser: isBrowser,
         isPageLoaded: !isBrowser,
@@ -610,7 +624,8 @@ var require, define;
         }
     }
 
-        /**
+    //>>excludeStart("requireExcludePlugin", pragmas.requireExcludePlugin);
+    /**
      * Sets up a plugin callback name. Want to make it easy to test if a plugin
      * needs to be called for a certain lifecycle event by testing for
      * if (s.plugins.onLifeCyleEvent) so only define the lifecycle event
@@ -678,7 +693,8 @@ var require, define;
 
         return req;
     };
-    
+    //>>excludeEnd("requireExcludePlugin");
+
     /**
      * As of jQuery 1.4.3, it supports a readyWait property that will hold off
      * calling jQuery ready callbacks until all scripts are loaded. Be sure
@@ -776,11 +792,13 @@ var require, define;
         var i, dep;
 
         if (pluginPrefix) {
-                        callPlugin(pluginPrefix, context, {
+            //>>excludeStart("requireExcludePlugin", pragmas.requireExcludePlugin);
+            callPlugin(pluginPrefix, context, {
                 name: "checkDeps",
                 args: [name, deps, context]
             });
-                    } else {
+            //>>excludeEnd("requireExcludePlugin");
+        } else {
             for (i = 0; (dep = deps[i]); i++) {
                 if (!context.specified[dep.fullName]) {
                     context.specified[dep.fullName] = true;
@@ -790,11 +808,13 @@ var require, define;
 
                     //If a plugin, call its load method.
                     if (dep.prefix) {
-                                                callPlugin(dep.prefix, context, {
+                        //>>excludeStart("requireExcludePlugin", pragmas.requireExcludePlugin);
+                        callPlugin(dep.prefix, context, {
                             name: "load",
                             args: [dep.name, context.contextName]
                         });
-                                            } else {
+                        //>>excludeEnd("requireExcludePlugin");
+                    } else {
                         req.load(dep.name, context.contextName);
                     }
                 }
@@ -802,7 +822,8 @@ var require, define;
         }
     };
 
-        /**
+    //>>excludeStart("requireExcludeModify", pragmas.requireExcludeModify);
+    /**
      * Register a module that modifies another module. The modifier will
      * only be called once the target module has been loaded.
      *
@@ -871,7 +892,8 @@ var require, define;
             }
         }
     };
-    
+    //>>excludeEnd("requireExcludeModify");
+
     req.isArray = function (it) {
         return ostring.call(it) === "[object Array]";
     };
@@ -1147,8 +1169,10 @@ var require, define;
                 modifiers = context.modifiers, waiting, noLoads = "",
                 hasLoadedProp = false, stillLoading = false, prop,
 
-                                pIsWaiting = s.plugins.isWaiting, pOrderDeps = s.plugins.orderDeps,
-                
+                //>>excludeStart("requireExcludePlugin", pragmas.requireExcludePlugin);
+                pIsWaiting = s.plugins.isWaiting, pOrderDeps = s.plugins.orderDeps,
+                //>>excludeEnd("requireExcludePlugin");
+
                 i, module, allDone, loads, loadArgs, err;
 
         //If already doing a checkLoaded call,
@@ -1197,8 +1221,10 @@ var require, define;
 
         //Check for exit conditions.
         if (!hasLoadedProp && !waiting.length
-                        && (!pIsWaiting || !pIsWaiting(context))
-                       ) {
+            //>>excludeStart("requireExcludePlugin", pragmas.requireExcludePlugin);
+            && (!pIsWaiting || !pIsWaiting(context))
+            //>>excludeEnd("requireExcludePlugin");
+           ) {
             //If the loaded object had no items, then the rest of
             //the work below does not need to be done.
             context.isCheckLoaded = false;
@@ -1228,13 +1254,16 @@ var require, define;
         context.waiting = [];
         context.loaded = {};
 
-                //Call plugins to order their dependencies, do their
+        //>>excludeStart("requireExcludePlugin", pragmas.requireExcludePlugin);
+        //Call plugins to order their dependencies, do their
         //module definitions.
         if (pOrderDeps) {
             pOrderDeps(context);
         }
-        
-                //Before defining the modules, give priority treatment to any modifiers
+        //>>excludeEnd("requireExcludePlugin");
+
+        //>>excludeStart("requireExcludeModify", pragmas.requireExcludeModify);
+        //Before defining the modules, give priority treatment to any modifiers
         //for modules that are already defined.
         for (prop in modifiers) {
             if (!(prop in empty)) {
@@ -1243,7 +1272,8 @@ var require, define;
                 }
             }
         }
-        
+        //>>excludeEnd("requireExcludeModify");
+
         //Define the modules, doing a depth first search.
         for (i = 0; (module = waiting[i]); i++) {
             req.exec(module, {}, waiting, context);
@@ -1253,8 +1283,10 @@ var require, define;
         context.isCheckLoaded = false;
 
         if (context.waiting.length
-                        || (pIsWaiting && pIsWaiting(context))
-                       ) {
+            //>>excludeStart("requireExcludePlugin", pragmas.requireExcludePlugin);
+            || (pIsWaiting && pIsWaiting(context))
+            //>>excludeEnd("requireExcludePlugin");
+           ) {
             //More things in this context are waiting to load. They were probably
             //added while doing the work above in checkLoaded, calling module
             //callbacks that triggered other require calls.
@@ -1328,8 +1360,10 @@ var require, define;
             modRequire = makeContextModuleFunc(null, contextName, moduleName);
 
         req.mixin(modRequire, {
-                        modify: makeContextModuleFunc("modify", contextName, moduleName),
-                        def: makeContextModuleFunc("def", contextName, moduleName),
+            //>>excludeStart("requireExcludeModify", pragmas.requireExcludeModify);
+            modify: makeContextModuleFunc("modify", contextName, moduleName),
+            //>>excludeEnd("requireExcludeModify");
+            def: makeContextModuleFunc("def", contextName, moduleName),
             get: makeContextModuleFunc("get", contextName, moduleName),
             nameToUrl: makeContextModuleFunc("nameToUrl", contextName, moduleName),
             toUrl: makeContextModuleFunc("toUrl", contextName, moduleName),
@@ -1423,9 +1457,11 @@ var require, define;
             }
         }
 
-                //Execute modifiers, if they exist.
+        //>>excludeStart("requireExcludeModify", pragmas.requireExcludeModify);
+        //Execute modifiers, if they exist.
         req.execModifiers(name, traced, waiting, context);
-        
+        //>>excludeEnd("requireExcludeModify");
+
         return ret;
     };
 
@@ -1443,7 +1479,8 @@ var require, define;
         return cb.apply(null, args);
     };
 
-        /**
+    //>>excludeStart("requireExcludeModify", pragmas.requireExcludeModify);
+    /**
      * Executes modifiers for the given module name.
      * @param {String} target
      * @param {Object} traced
@@ -1465,7 +1502,8 @@ var require, define;
             delete modifiers[target];
         }
     };
-    
+    //>>excludeEnd("requireExcludeModify");
+
     /**
      * callback for script loads, used to check status of loading.
      *
@@ -1586,12 +1624,22 @@ var require, define;
         if (cfg.baseUrlMatch) {
             rePkg = cfg.baseUrlMatch;
         } else {
-            
-            
-            
-                        rePkg = /(allplugins-)?require\.js(\W|$)/i;
-            
-                    }
+            //>>includeStart("jquery", pragmas.jquery);
+            rePkg = /(requireplugins-|require-)?jquery[\-\d\.]*(min)?\.js(\W|$)/i;
+            //>>includeEnd("jquery");
+
+            //>>includeStart("dojoConvert", pragmas.dojoConvert);
+            rePkg = /dojo\.js(\W|$)/i;
+            //>>includeEnd("dojoConvert");
+
+            //>>excludeStart("dojoConvert", pragmas.dojoConvert);
+
+            //>>excludeStart("jquery", pragmas.jquery);
+            rePkg = /(allplugins-)?require\.js(\W|$)/i;
+            //>>excludeEnd("jquery");
+
+            //>>excludeEnd("dojoConvert");
+        }
 
         for (i = scripts.length - 1; i > -1 && (script = scripts[i]); i--) {
             //Set the "head" where we can append children by
@@ -1629,7 +1677,8 @@ var require, define;
         }
     }
 
-        //****** START page load functionality ****************
+    //>>excludeStart("requireExcludePageLoad", pragmas.requireExcludePageLoad);
+    //****** START page load functionality ****************
     /**
      * Sets the page as loaded and triggers check for all modules loaded.
      */
@@ -1741,7 +1790,8 @@ var require, define;
         }
     }
     //****** END page load functionality ****************
-    
+    //>>excludeEnd("requireExcludePageLoad");
+
     //Set up default context. If require was a configuration object, use that as base config.
     req(cfg);
 
