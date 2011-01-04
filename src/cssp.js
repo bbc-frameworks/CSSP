@@ -136,7 +136,6 @@
          * @param {string} name Like some/url/foo.css?elementId
          */
         load: function (name, contextName) {
-//console.log('>>> name is '+name+', contextName is '+contextName);
             var splitAt = name.lastIndexOf('?'),
                 url = (splitAt > 0? name.substring(0, splitAt) : name),
                 cssElmId = (splitAt > 0? name.substring(splitAt + 1, name.length) : 'cssp-' + name.replace(/[^a-z0-9_]/gi, '-') ),
@@ -148,11 +147,9 @@
                 head = require.s.head,
                 node = head.ownerDocument.createElement('link'),
                 cssUrl;
-//console.log('moduleId is '+moduleId);
 
             // is there a path defined for this css?
             var cssUrl = context.config.paths['cssp!'+url];
-//console.log('cssUrl is '+cssUrl);
 
             if (cssUrl && ! /^(\/|^https?:)/i.test(cssUrl)) {
                 // not an absolute path or URL
@@ -163,7 +160,6 @@
                 // absolute path, without protocol and host
                 cssUrl = (context.config.baseUrl || '') + url;
             }
-//console.log('resolved cssUrl is '+cssUrl);
 
             if (cacheTrack[cssUrl]) { // already included a link to this page
                 return true;
