@@ -24,6 +24,37 @@ test('CSSP can be used when no test element exists on the page.', function() {
         start();  
     }, 2000);
 });
+
+test('CSSP plugin works between require calls.', function () {
+    
+    expect(2);
+    stop(3000);
+    
+    require(
+        {
+            baseUrl: 'mock'
+        },
+        ['cssp!test1.css?test1'],
+        function() {
+            ok(true, 'The css dependency should be fulfilled.');
+        }
+    );
+    
+    require(
+        ['cssp!test1.css?test1'],
+        function() {
+            ok(true, 'The css dependency should be fulfilled in a second separate call to require().');
+        }
+    );
+    
+    setTimeout(function() {
+        restoreTestElement();
+        start();
+    }, 2000);
+    
+    
+});
+
  
  test('CSSP can be used when a test element already exists on the page.', function() {
  	expect(3);
