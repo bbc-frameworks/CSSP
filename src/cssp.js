@@ -168,37 +168,6 @@
             
             node.href = cssUrl;
             head.appendChild(node);
-        },
-
-        /**
-         * Called when the dependencies of a module are checked.
-         */
-        checkDeps: function (name, deps, context) {
-            // no-op
-        },
-
-        /**
-         * Called to determine if a module is waiting to load.
-         */
-        isWaiting: function (context) {
-            return !!context.csspWaiting.length;
-        },
-
-        /**
-         * Called when all modules have been loaded.
-         */
-        orderDeps: function (context) {
-            // clear up state since further processing could
-            // add more things to fetch.
-            var i,
-                dep,
-                waitAry = context.csspWaiting,
-                returnValue = context.linkNode; // <- the thing passed into the requirejs callback
-            
-            context.csspWaiting = [];
-            for (i = 0; (dep = waitAry[i]); i++) {
-                context.defined[dep.name] = returnValue;
-            }
         }
     });
 }());
