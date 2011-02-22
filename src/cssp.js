@@ -113,26 +113,7 @@
     define(
         "cssp",
         {
-        prefix: 'cssp',
-
-        /*
-         * This callback is prefix-specific, only gets called for this prefix.
-         */
-        require: function (name, deps, callback, context) {
-            // no-op
-        },
-
-        /*
-         * Called when a new context is defined. Use this to store
-         * context-specific info on it.
-         */
-        newContext: function (context) {
-            require.mixin(context, {
-                linkNode: {},
-                csspWaiting: []
-            });
-        },
-
+        
         /**
          * Called when a dependency needs to be loaded.
          * @param {string} name Like some/url/foo.css?elementId
@@ -185,12 +166,6 @@
             }
             
             
-            if (! parentRequire.csspWaiting) {
-                parentRequire.csspWaiting = [];
-            }
-            
-            // hold on to the data for later dependency resolution in orderDeps
-            parentRequire.csspWaiting.push(data);
             //context.loaded[name] = false;
             node.type = 'text/css';
             node.rel  = 'stylesheet';
