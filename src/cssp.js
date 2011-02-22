@@ -156,24 +156,18 @@
                     document.body.removeChild(elem);
                 }
                 
-                //context.loaded[name] = true;
                 load(node);
-                //require.checkLoaded(contextName);
             }]);
             
             if (csspQueue.length === 1) {
                 intervalId = setInterval(look, 250); // start looking now
             }
             
-            
-            //context.loaded[name] = false;
             node.type = 'text/css';
             node.rel  = 'stylesheet';
             
             node.href = cssUrl;
             head.appendChild(node);
-            
-            //context.linkNode = node;
         },
 
         /**
