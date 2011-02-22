@@ -110,7 +110,9 @@
         return elem;
     }
     
-    require.plugin({
+    define(
+        "cssp",
+        {
         prefix: 'cssp',
 
         /*
@@ -135,11 +137,10 @@
          * Called when a dependency needs to be loaded.
          * @param {string} name Like some/url/foo.css?elementId
          */
-        load: function (name, contextName) {
+        load: function (name, parentRequire, load, config) {
             var splitAt = name.lastIndexOf('?'),
                 url = (splitAt > 0? name.substring(0, splitAt) : name),
                 cssElmId = (splitAt > 0? name.substring(splitAt + 1, name.length) : 'cssp-' + name.replace(/[^a-z0-9_]/gi, '-') ),
-                context = require.s.contexts[contextName],
                 moduleId = 'cssp!' + url,
                 data = {
                     name: name
@@ -149,20 +150,20 @@
                 cssUrl;
 
             // is there a path defined for this css?
-            var cssUrl = context.config.paths['cssp!'+url];
+            var cssUrl = config.paths['cssp!'+url];
 
             if (cssUrl && ! /^(\/|^https?:)/i.test(cssUrl)) {
                 // not an absolute path or URL
-                cssUrl = (context.config.baseUrl || '') + cssUrl;
+                cssUrl = (config.baseUrl || '') + cssUrl;
                 
             }
             else if (!cssUrl || cssUrl.charAt(0) === '/') {
                 // absolute path, without protocol and host
-                cssUrl = (context.config.baseUrl || '') + url;
+                cssUrl = (config.baseUrl || '') + url;
             }
 
             if (cacheTrack[cssUrl]) { // already included a link to this page
-                return true;
+                return load(node);
             }
             cacheTrack[cssUrl] = url;
             
@@ -174,24 +175,30 @@
                     document.body.removeChild(elem);
                 }
                 
-                context.loaded[name] = true;
-                require.checkLoaded(contextName);
+                //context.loaded[name] = true;
+                load(node);
+                //require.checkLoaded(contextName);
             }]);
             
             if (csspQueue.length === 1) {
                 intervalId = setInterval(look, 250); // start looking now
             }
-
+            
+            
+            if (! parentRequire.csspWaiting) {
+                parentRequire.csspWaiting = [];
+            }
+            
             // hold on to the data for later dependency resolution in orderDeps
-            context.csspWaiting.push(data);
-            context.loaded[name] = false;
+            parentRequire.csspWaiting.push(data);
+            //context.loaded[name] = false;
             node.type = 'text/css';
             node.rel  = 'stylesheet';
             
             node.href = cssUrl;
             head.appendChild(node);
             
-            context.linkNode = node;
+            //context.linkNode = node;
         },
 
         /**
