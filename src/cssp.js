@@ -111,63 +111,60 @@
     }
     
     define(
-        "cssp",
+        'cssp',
         {
         
         /**
          * Called when a dependency needs to be loaded.
          * @param {string} name Like some/url/foo.css?elementId
+         * @param {Object} parentRequire reference to the parent context's require.
+         * @param {function} load To call when the dependency is resolved.
+         * @param {Object} config The parent context's configuration.
          */
         load: function (name, parentRequire, load, config) {
+
             var splitAt = name.lastIndexOf('?'),
-                url = (splitAt > 0? name.substring(0, splitAt) : name),
-                cssElmId = (splitAt > 0? name.substring(splitAt + 1, name.length) : 'cssp-' + name.replace(/[^a-z0-9_]/gi, '-') ),
-                moduleId = 'cssp!' + url,
-                data = {
-                    name: name
-                },
-                head = require.s.head,
-                node = head.ownerDocument.createElement('link'),
-                cssUrl;
+                cssUrl = (splitAt > 0? name.substring(0, splitAt) : name),
+                cssElementId = (splitAt > 0? name.substring(splitAt + 1, name.length) : 'cssp-' + name.replace(/[^a-z0-9_]/gi, '-') ),
+                moduleId = 'cssp!' + cssUrl,
+                head = document.getElementsByTagName('head')[0],
+                cssLinkElement = document.createElement('link');
 
             // is there a path defined for this css?
-            var cssUrl = config.paths['cssp!'+url];
+            cssUrl = config.paths['cssp!'+cssUrl]? config.paths['cssp!'+cssUrl] : cssUrl;
 
-            if (cssUrl && ! /^(\/|^https?:)/i.test(cssUrl)) {
-                // not an absolute path or URL
-                cssUrl = (config.baseUrl || '') + cssUrl;
-                
+            if (!cssUrl) {
+                throw('CSS URL is required.');
             }
-            else if (!cssUrl || cssUrl.charAt(0) === '/') {
-                // absolute path, without protocol and host
-                cssUrl = (config.baseUrl || '') + url;
-            }
+            
+            // apply effects like the 'basepath' being set on this requirejs configuration
+            cssUrl = parentRequire.toUrl(cssUrl);
 
-            if (cacheTrack[cssUrl]) { // already included a link to this page
-                return load(node);
+            if ( cacheTrack[cssUrl] ) {   // already included a link to this css
+                load( cacheTrack[cssUrl] ); // pass back the cached CSS Link element
+                return;
             }
-            cacheTrack[cssUrl] = url;
+            cacheTrack[cssUrl] = cssLinkElement;
             
             // add this item to the queue
-            csspQueue.push([cssElmId, function() { // create callback function
+            csspQueue.push([cssElementId, function() { // create callback function
                 // remove test element if it is one we added
-                var elem = document.getElementById(cssElmId);
-                if (elem.className === 'addedByCssp') {
+                var elem = document.getElementById(cssElementId);
+                if (elem.className === 'addedByCssp') { // only remove test elements that we added
                     document.body.removeChild(elem);
                 }
                 
-                load(node);
+                load(cssLinkElement);
             }]);
             
             if (csspQueue.length === 1) {
                 intervalId = setInterval(look, 250); // start looking now
             }
             
-            node.type = 'text/css';
-            node.rel  = 'stylesheet';
-            
-            node.href = cssUrl;
-            head.appendChild(node);
+            cssLinkElement.type = 'text/css';
+            cssLinkElement.rel  = 'stylesheet';
+            cssLinkElement.href = cssUrl;
+            head.appendChild(cssLinkElement); // order matters
         }
     });
 }());
