@@ -1,11 +1,14 @@
+0.4.0
+  - Updated to use plugin API for RequireJS 0.24.0
+
 0.3.0
-- Callback for a cssp dependency now receives a ref to the injected link DOM
-  node as its argument.
+  - Callback for a cssp dependency now receives a ref to the injected link DOM
+    node as its argument.
 
 0.2.0
-- Added support for cssp! module ID's in the requireJS paths configuration.
-- Added support for tracking css file injections, so same stylesheet is only
+  - Added support for cssp! module ID's in the requireJS paths configuration.
+  - Added support for tracking css file injections, so same stylesheet is only
   ever loaded once.
 
 0.0.1
-- Initial release: Support dependency on CSS files in RequireJS.
+  - Initial release: Support dependency on CSS files in RequireJS.
