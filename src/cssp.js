@@ -11,34 +11,33 @@
         csspQueue = [], // waiting for these: like [ [elemId, callback], [elemId, callback], ... ]
         intervalId,
         cacheTrack = {}; // what css files have already been added to this page?
+
     /*
      * Fix bugginess in IE that can cause the wrong element to be returned when
      * a DOM node has the same `name` as another DOM node's `id`.
      * @see http://www.sixteensmallstones.org/ie-javascript-bugs-overriding-internet-explorers-documentgetelementbyid-to-be-w3c-compliant-exposes-an-additional-bug-in-getattributes
      * @see http://www.w3.org/TR/2000/WD-DOM-Level-1-20000929/level-one-html.html#ID-36113835
      */
-    if ( navigator.userAgent.toLowerCase().indexOf('msie') > -1 ) { // IE-only bugs in here
-        var nativeGetElementById = document.getElementById;
-        
-        document.getElementById = function(elemId) {
-            var elem = nativeGetElementById(elemId);
-            
-            if (elem) {
-                if( elem.attributes['id'].value === elemId ) { //make sure that it is a valid match on id
-                    return elem;
-                }
-                else { //otherwise find the correct element
-                    for (var i = 1, leni = document.all[elemId].length; i < leni; i++) { // returns the first match
-                        if( document.all[elemId][i].attributes['id'].value === elemId ) {
-                            return document.all[elemId][i]; 
-                        }
+    function getElement(elemId){
+
+        var elem = document.getElementById(elemId);
+
+        if (elem) {
+            if( elem.attributes['id'].value === elemId ) { //make sure that it is a valid match on id
+                return elem;
+            }
+            else { //otherwise find the correct element
+                var elements = document.all[elemId];
+                for (var i = 1, leni = elements.length; i < leni; i++) { // returns the first match
+                    if( elements[i].attributes['id'].value === elemId ) {
+                        return elements[i]; 
                     }
                 }
             }
-            return null; // as per the W3 spec
-        };
+        }
+        return null; // as per the W3 spec
     }
-    
+
     /**
      * Given an element's id, returns the current z-index of the element
      * @private
@@ -47,7 +46,7 @@
      */
     function getZindex(elem) {
         var zIndex;
-        
+
         if (elem) {
             // the w3c way, uses hyphenated property names
             if (window.getComputedStyle) {
@@ -58,11 +57,11 @@
                 zIndex = elem.currentStyle['zIndex'];
             }
             zIndex = +zIndex;
-            
+
             return zIndex;
         }
     }
-    
+
     /**
      * Loop through the queue, looking for any node id's that match the magic number.
      * @private
@@ -70,20 +69,32 @@
     function look() {
         var cssp,
             elem;
-        
+            
         if (!document.body) {
             return;
         }
-            
+
         for (var i = 0; i < csspQueue.length; i++) { // length may change during loop
-            cssp = csspQueue[i],
-            elem = document.getElementById(cssp[0]);
-            
-            // is there a test element to look for?
-            if (!elem) {
-                elem = addTestElement(cssp[0]);
+            cssp = csspQueue[i];
+
+            /**
+             The following is for optimization.
+             Query the DOM only once and cache the DOM element
+             in the cssp[0] item
+            */
+            if(typeof cssp[0] === 'string'){
+                elem = getElement(cssp[0]);
+                // is there a test element to look for?
+                if (!elem) {
+                    elem = addTestElement(cssp[0]);
+                }
+
+                cssp[0] = elem;
             }
-            
+            else{
+                elem = cssp[0];
+            }
+
             if ( getZindex(elem) === magicNumber ) {
                 cssp[1](); // fire callback
                 csspQueue.splice(i--, 1); // remove this item from the queue, decrement i
@@ -94,7 +105,7 @@
             }
         }
     }
-    
+
     /**
      * If there is no test element with the given ID, we add one ourselves.
      * @private
@@ -109,7 +120,7 @@
         
         return elem;
     }
-    
+
     define(
         'cssp',
         {
@@ -145,11 +156,11 @@
                 return;
             }
             cacheTrack[cssUrl] = cssLinkElement;
-            
+
             // add this item to the queue
             csspQueue.push([cssElementId, function() { // create callback function
                 // remove test element if it is one we added
-                var elem = document.getElementById(cssElementId);
+                var elem = getElement(cssElementId);
                 if (elem.className === 'addedByCssp') { // only remove test elements that we added
                     document.body.removeChild(elem);
                 }
@@ -160,7 +171,7 @@
             if (csspQueue.length === 1) {
                 intervalId = setInterval(look, 250); // start looking now
             }
-            
+
             cssLinkElement.type = 'text/css';
             cssLinkElement.rel  = 'stylesheet';
             cssLinkElement.href = cssUrl;

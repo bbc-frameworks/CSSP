@@ -1,25 +1,26 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<link rel="stylesheet" href="lib/qunit.css" type="text/css"/>
+    <link rel="stylesheet" href="lib/qunit.css" type="text/css"/>
     <script type="text/javascript" src="lib/qunit.js"></script>
-	
-	<!--script type="text/javascript" src="lib/require.js"></script-->
-	<script type="text/javascript" src="https://github.com/jrburke/requirejs/raw/master/require.js"></script>
-	<script type="text/javascript" src="../src/cssp.js"></script>
+    
+    <script type="text/javascript" src="lib/require.js"></script>
+    <!-- Referencing the requirejs script remotely from github doesn't work on a VM for some reason -->
+    <!--<script type="text/javascript" src="https://github.com/jrburke/requirejs/raw/master/require.js"></script>-->
+    <script type="text/javascript" src="../src/cssp.js"></script>
 
-	<script type="text/javascript" src="tests/basic.js"></script>
-	<script type="text/javascript" src="tests/paths_config.js"></script>
+    <script type="text/javascript" src="tests/basic.js"></script>
+    <script type="text/javascript" src="tests/paths_config.js"></script>
 </head>
 <body>  
-	<h1 id="qunit-header"></h1>
-	<h2 id="qunit-banner"></h2>
-	<div id="qunit-testrunner-toolbar"></div>
-	<h2 id="qunit-userAgent"></h2>
-	<ol id="qunit-tests"></ol>
-	
-	<div id="test-element"><span id="first">Hello</span> <span id="last">World</span>.<div id="test2"></div></div>
-	<script type="text/javascript">
+    <h1 id="qunit-header"></h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    
+    <div id="test-element"><span id="first">Hello</span> <span id="last">World</span>.<div id="test2"></div></div>
+    <script type="text/javascript">
         function saveTestElement() {
             restoreTestElement.html = document.getElementById('test-element').innerHTML;
         }

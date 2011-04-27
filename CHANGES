@@ -1,3 +1,7 @@
+0.4.1
+ - Fixed a bug - removed sniffing for IE and over-writing of the global getElementById method since this was causing errors in IE9
+ - Optimized loop in the look function by reducing DOM queries for an element
+
 0.4.0
   - Updated to use plugin API for RequireJS 0.24.0
 
